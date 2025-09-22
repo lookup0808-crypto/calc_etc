@@ -46,7 +46,7 @@ function InputField({
 
   const getSuffix = () => {
     switch (type) {
-      case "currency": return "$";
+      case "currency": return "원";
       case "percentage": return "%";
       default: return "";
     }

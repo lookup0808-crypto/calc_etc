@@ -32,8 +32,8 @@ export default function ETFSimPage() {
   ];
 
   const [selectedETF, setSelectedETF] = useState<ETFData | null>(null);
-  const [initialAmount, setInitialAmount] = useState(10000);
-  const [monthlyAmount, setMonthlyAmount] = useState(500);
+  const [initialAmount, setInitialAmount] = useState(13000000);
+  const [monthlyAmount, setMonthlyAmount] = useState(650000);
   const [investmentPeriod, setInvestmentPeriod] = useState(20);
   const [result, setResult] = useState<ETFResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
@@ -84,7 +84,7 @@ export default function ETFSimPage() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ko-KR', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'KRW',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -131,20 +131,20 @@ export default function ETFSimPage() {
           </div>
           
           <InputField
-            label="초기 투자금 ($)"
+            label="초기 투자금 (원)"
             value={initialAmount}
             onChange={setInitialAmount}
             type="currency"
             min={0}
-            step={1000}
+            step={1000000}
           />
           <InputField
-            label="월별 적립액 ($)"
+            label="월별 적립액 (원)"
             value={monthlyAmount}
             onChange={setMonthlyAmount}
             type="currency"
             min={0}
-            step={100}
+            step={100000}
           />
           <InputField
             label="투자 기간 (년)"
@@ -296,7 +296,7 @@ export default function ETFSimPage() {
                 labelKey="year"
                 valueKey="amount"
                 xAxisLabel="년차"
-                yAxisLabel="자산 ($)"
+                yAxisLabel="자산 (원)"
               />
             </CardContent>
           </Card>

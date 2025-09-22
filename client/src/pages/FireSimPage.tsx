@@ -16,9 +16,9 @@ interface FireResult {
 
 export default function FireSimPage() {
   const [currentAge, setCurrentAge] = useState(25);
-  const [income, setIncome] = useState(3000);
+  const [income, setIncome] = useState(4000000);
   const [savingRate, setSavingRate] = useState(0.3);
-  const [targetAssets, setTargetAssets] = useState(1000000);
+  const [targetAssets, setTargetAssets] = useState(1300000000);
   const [annualReturn, setAnnualReturn] = useState(0.07);
   const [result, setResult] = useState<FireResult | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
@@ -72,7 +72,7 @@ export default function FireSimPage() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('ko-KR', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'KRW',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -95,12 +95,12 @@ export default function FireSimPage() {
             max={80}
           />
           <InputField
-            label="월 소득 ($)"
+            label="월 소득 (원)"
             value={income}
             onChange={setIncome}
             type="currency"
             min={0}
-            step={100}
+            step={100000}
           />
           <InputField
             label="저축률"
@@ -112,12 +112,12 @@ export default function FireSimPage() {
             step={0.01}
           />
           <InputField
-            label="목표 자산 ($)"
+            label="목표 자산 (원)"
             value={targetAssets}
             onChange={setTargetAssets}
             type="currency"
             min={0}
-            step={10000}
+            step={10000000}
           />
           <InputField
             label="연간 수익률"
@@ -203,7 +203,7 @@ export default function FireSimPage() {
                   {formatNumber(result.totalInterest)}
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  복리 수익 ($)
+                  복리 수익 (원)
                 </p>
               </CardContent>
             </Card>
@@ -246,7 +246,7 @@ export default function FireSimPage() {
                 labelKey="age"
                 valueKey="assets"
                 xAxisLabel="나이"
-                yAxisLabel="자산 ($)"
+                yAxisLabel="자산 (원)"
               />
             </CardContent>
           </Card>
