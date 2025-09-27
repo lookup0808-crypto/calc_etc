@@ -1,12 +1,19 @@
+
 import { useState } from 'react';
 import { InputForm, InputField } from '../InputForm';
 
 export default function InputFormExample() {
+
+
   // todo: remove mock functionality
   const [currentAge, setCurrentAge] = useState(25);
   const [income, setIncome] = useState(4000000);
   const [savingRate, setSavingRate] = useState(0.3);
   const [targetAssets, setTargetAssets] = useState(1300000000);
+
+  // 입력값이 숫자 또는 빈 문자열일 때만 onChange를 호출하는 핸들러
+  // 모바일에서 숫자 입력값을 모두 지울 수 있도록 빈 문자열도 onChange로 전달
+
 
   return (
     <div className="p-6 bg-background max-w-md">

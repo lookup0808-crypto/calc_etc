@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import ChartGraph from "../components/ChartGraph";
 import Footer from "../components/Footer";
 
+function numberWithCommas(x) {
+  if (typeof x === "number") x = x.toString();
+  return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export default function FireSim() {
   const [currentAge, setCurrentAge] = useState(25);
   const [income, setIncome] = useState(3000);
@@ -31,25 +36,36 @@ export default function FireSim() {
       <div className="mb-4">
         <label>현재 나이:</label>
         <input type="number" value={currentAge} onChange={e => setCurrentAge(Number(e.target.value))} className="border p-1 ml-2"/>
+        <span className="ml-2">{numberWithCommas(currentAge)}</span>
       </div>
       <div className="mb-4">
         <label>월 소득 ($):</label>
         <input type="number" value={income} onChange={e => setIncome(Number(e.target.value))} className="border p-1 ml-2"/>
+        <span className="ml-2">{numberWithCommas(income)}</span>
       </div>
       <div className="mb-4">
         <label>저축률 (%):</label>
         <input type="number" value={savingRate*100} onChange={e => setSavingRate(Number(e.target.value)/100)} className="border p-1 ml-2"/>
+        <span className="ml-2">{numberWithCommas((savingRate*100).toFixed(1))}%</span>
       </div>
       <div className="mb-4">
         <label>목표 자산 ($):</label>
         <input type="number" value={targetAssets} onChange={e => setTargetAssets(Number(e.target.value))} className="border p-1 ml-2"/>
+        <span className="ml-2">{numberWithCommas(targetAssets)}</span>
       </div>
       <button onClick={simulateFIRE} className="bg-orange-500 text-white px-4 py-2 rounded">시뮬레이션 실행</button>
 
       {result && (
         <div className="mt-6">
-          <h2>예상 FIRE 달성 나이: {result.fireAge}세</h2>
-          <ChartGraph data={result.assetsOverTime} title="자산 성장" labelKey="age" valueKey="assets" />
+          <h2>예상 FIRE 달성 나이: {numberWithCommas(result.fireAge)}세</h2>
+          <div className="mb-2">월 저축액: {numberWithCommas(result.monthlySaving.toFixed(2))} $</div>
+          <ChartGraph
+            data={result.assetsOverTime.map(item => ({ ...item, assets: Number(item.assets) }))}
+            title="자산 성장"
+            labelKey="age"
+            valueKey="assets"
+            valueFormatter={v => numberWithCommas(Number(v).toFixed(2))}
+          />
         </div>
       )}
       <Footer />
