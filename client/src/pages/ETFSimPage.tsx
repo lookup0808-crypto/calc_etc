@@ -25,6 +25,7 @@ interface ETFResult {
   // 환율 상태 및 fetch 함수 추가
   const [exchangeRate, setExchangeRate] = useState<number>(1350); // 기본값: 1350원/USD
   const [isFetchingRate, setIsFetchingRate] = useState(false);
+  const [exchangeRateTime, setExchangeRateTime] = useState<string>("");
   const fetchExchangeRate = async () => {
     setIsFetchingRate(true);
     try {
@@ -32,6 +33,11 @@ interface ETFResult {
       const data = await res.json();
       if (data && data.rates && data.rates.KRW) {
         setExchangeRate(data.rates.KRW);
+        if (data.date) {
+          setExchangeRateTime(data.date + ' 기준');
+        } else {
+          setExchangeRateTime('실시간 조회');
+        }
       }
     } catch (e) {
       alert('환율 정보를 불러오지 못했습니다.');
@@ -220,19 +226,26 @@ interface ETFResult {
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 환율 입력 및 fetch */}
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-sm">USD/KRW 환율</span>
-          <input
-            type="number"
-            value={exchangeRate}
-            onChange={e => setExchangeRate(Number(e.target.value))}
-            className="border rounded px-2 py-1 w-24 text-right"
-            min={1}
-            step={0.01}
-          />
-          <Button size="sm" onClick={fetchExchangeRate} disabled={isFetchingRate}>
-            {isFetchingRate ? "불러오는 중..." : "최신 환율 적용"}
-          </Button>
+        <div className="mb-4 flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-sm">USD/KRW 환율</span>
+            <input
+              type="number"
+              value={exchangeRate}
+              onChange={e => setExchangeRate(Number(e.target.value))}
+              className="border rounded px-2 py-1 w-24 text-right"
+              min={1}
+              step={0.01}
+            />
+            <Button size="sm" onClick={fetchExchangeRate} disabled={isFetchingRate}>
+              {isFetchingRate ? "불러오는 중..." : "최신 환율 적용"}
+            </Button>
+          </div>
+          <div className="text-xs text-muted-foreground pl-1">
+            {exchangeRateTime && (
+              <span>환율 정보: {exchangeRate}원 ( {exchangeRateTime} )</span>
+            )}
+          </div>
         </div>
         {/* Input Form */}
         <InputForm title="ETF 투자 시뮬레이션 설정">
