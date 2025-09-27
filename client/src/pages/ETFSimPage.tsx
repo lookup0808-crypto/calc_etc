@@ -11,6 +11,7 @@ interface ETFData {
   symbol: string;
   avgReturn: number;
   description: string;
+  yearlyReturns?: { year: number; return: number }[];
 }
 
 interface ETFResult {
@@ -23,12 +24,58 @@ interface ETFResult {
 
 export default function ETFSimPage() {
   // todo: remove mock functionality - ETF data should come from backend
+  // 연도별 실제 수익률 mock 데이터 추가
   const etfOptions: ETFData[] = [
-    { name: "S&P 500 ETF", symbol: "SPY", avgReturn: 0.10, description: "미국 대형주 500개 기업" },
-    { name: "나스닥 ETF", symbol: "QQQ", avgReturn: 0.12, description: "나스닥 100 기술주" },
-    { name: "전세계 주식 ETF", symbol: "VTI", avgReturn: 0.08, description: "전세계 분산 투자" },
-    { name: "신흥국 ETF", symbol: "VWO", avgReturn: 0.07, description: "신흥국 시장" },
-    { name: "리얼 에스테이트 ETF", symbol: "VNQ", avgReturn: 0.09, description: "부동산 투자 신탁" },
+    { name: "S&P 500 ETF", symbol: "SPY", avgReturn: 0.10, description: "미국 대형주 500개 기업",
+      yearlyReturns: [
+        { year: 2018, return: -0.04 },
+        { year: 2019, return: 0.31 },
+        { year: 2020, return: 0.18 },
+        { year: 2021, return: 0.28 },
+        { year: 2022, return: -0.18 },
+        { year: 2023, return: 0.15 },
+      ]
+    },
+    { name: "나스닥 ETF", symbol: "QQQ", avgReturn: 0.12, description: "나스닥 100 기술주",
+      yearlyReturns: [
+        { year: 2018, return: -0.01 },
+        { year: 2019, return: 0.39 },
+        { year: 2020, return: 0.48 },
+        { year: 2021, return: 0.27 },
+        { year: 2022, return: -0.33 },
+        { year: 2023, return: 0.54 },
+      ]
+    },
+    { name: "전세계 주식 ETF", symbol: "VTI", avgReturn: 0.08, description: "전세계 분산 투자",
+      yearlyReturns: [
+        { year: 2018, return: -0.05 },
+        { year: 2019, return: 0.30 },
+        { year: 2020, return: 0.21 },
+        { year: 2021, return: 0.25 },
+        { year: 2022, return: -0.19 },
+        { year: 2023, return: 0.13 },
+      ]
+    },
+    { name: "신흥국 ETF", symbol: "VWO", avgReturn: 0.07, description: "신흥국 시장",
+      yearlyReturns: [
+        { year: 2018, return: -0.15 },
+        { year: 2019, return: 0.18 },
+        { year: 2020, return: 0.15 },
+        { year: 2021, return: -0.03 },
+        { year: 2022, return: -0.22 },
+        { year: 2023, return: 0.09 },
+      ]
+    },
+    { name: "리얼 에스테이트 ETF", symbol: "VNQ", avgReturn: 0.09, description: "부동산 투자 신탁",
+      yearlyReturns: [
+        { year: 2018, return: -0.05 },
+        { year: 2019, return: 0.29 },
+        { year: 2020, return: -0.05 },
+        { year: 2021, return: 0.41 },
+        { year: 2022, return: -0.26 },
+        { year: 2023, return: 0.13 },
+      ]
+    },
   ];
 
   const [selectedETF, setSelectedETF] = useState<ETFData | null>(null);
@@ -284,7 +331,26 @@ export default function ETFSimPage() {
             </CardContent>
           </Card>
 
-          {/* Chart */}
+          {/* 연도별 실제 수익률 비교 차트 */}
+          {selectedETF.yearlyReturns && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{selectedETF.name} 연도별 실제 수익률</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ChartGraph
+                  data={selectedETF.yearlyReturns.map(y => ({ ...y, return: y.return * 100 }))}
+                  title={`${selectedETF.name} 연도별 실제 수익률`}
+                  labelKey="year"
+                  valueKey="return"
+                  xAxisLabel="연도"
+                  yAxisLabel="수익률 (%)"
+                  valueFormatter={(v) => `${v.toFixed(1)}%`}
+                />
+              </CardContent>
+            </Card>
+          )}
+          {/* 기존 자산 성장 차트 */}
           <Card>
             <CardHeader>
               <CardTitle>자산 성장 차트</CardTitle>
