@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface InputFieldProps {
   label: string;
-  value: number;
-  onChange: (value: number) => void;
+  value: number | "";
+  onChange: (value: number | "") => void;
   type?: "number" | "currency" | "percentage";
   placeholder?: string;
   min?: number;
@@ -22,26 +22,28 @@ function InputField({
   min, 
   max, 
   step = 1 
-}: InputFieldProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(e.target.value) || 0;
-    onChange(newValue);
+}: InputFieldProps & { value: number | ""; onChange: (value: number | "") => void }) {
+  // 입력값이 빈 문자열이면 onChange("") 전달, 아니면 숫자 전달
+  const handleDisplayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === "") {
+      onChange("");
+    } else {
+      const displayValue = parseFloat(raw);
+      if (type === "percentage") {
+        onChange(isNaN(displayValue) ? "" : displayValue / 100);
+      } else {
+        onChange(isNaN(displayValue) ? "" : displayValue);
+      }
+    }
   };
 
   const getDisplayValue = () => {
+    if (value === "") return "";
     if (type === "percentage") {
       return value * 100;
     }
     return value;
-  };
-
-  const handleDisplayChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const displayValue = parseFloat(e.target.value) || 0;
-    if (type === "percentage") {
-      onChange(displayValue / 100);
-    } else {
-      onChange(displayValue);
-    }
   };
 
   const getSuffix = () => {
