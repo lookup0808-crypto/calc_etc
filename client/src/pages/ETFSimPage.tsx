@@ -22,7 +22,23 @@ interface ETFResult {
   assetsOverTime: { year: number; amount: number }[];
 }
 
-export default function ETFSimPage() {
+  // 환율 상태 및 fetch 함수 추가
+  const [exchangeRate, setExchangeRate] = useState<number>(1350); // 기본값: 1350원/USD
+  const [isFetchingRate, setIsFetchingRate] = useState(false);
+  const fetchExchangeRate = async () => {
+    setIsFetchingRate(true);
+    try {
+      const res = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=KRW');
+      const data = await res.json();
+      if (data && data.rates && data.rates.KRW) {
+        setExchangeRate(data.rates.KRW);
+      }
+    } catch (e) {
+      alert('환율 정보를 불러오지 못했습니다.');
+    } finally {
+      setIsFetchingRate(false);
+    }
+  };
   // todo: remove mock functionality - ETF data should come from backend
   // 연도별 실제 수익률 mock 데이터 추가
   const etfOptions: ETFData[] = [
@@ -157,38 +173,27 @@ export default function ETFSimPage() {
 
   const calculateETF = () => {
     if (!selectedETF) return;
-    
     setIsCalculating(true);
-    console.log('ETF 시뮬레이션 시작'); // todo: remove mock functionality
-    
     setTimeout(() => {
       const monthlyRate = selectedETF.avgReturn / 12;
       const totalMonths = investmentPeriod * 12;
-      let currentAmount = initialAmount;
+      let currentAmount = initialAmount / exchangeRate; // 원화→달러 환산
       const assetsOverTime: { year: number; amount: number }[] = [];
-      
-      // Add initial amount
       assetsOverTime.push({ year: 0, amount: initialAmount });
-      
-      // Calculate compound growth with monthly contributions
       for (let month = 1; month <= totalMonths; month++) {
-        currentAmount = (currentAmount + monthlyAmount) * (1 + monthlyRate);
-        
-        // Record annual data points
+        currentAmount = (currentAmount + monthlyAmount / exchangeRate) * (1 + monthlyRate);
         if (month % 12 === 0) {
-          assetsOverTime.push({ 
-            year: month / 12, 
-            amount: parseFloat(currentAmount.toFixed(2)) 
+          assetsOverTime.push({
+            year: month / 12,
+            amount: parseFloat((currentAmount * exchangeRate).toFixed(2)) // 다시 원화로 환산
           });
         }
       }
-      
       const totalInvested = initialAmount + (monthlyAmount * totalMonths);
-      const totalReturn = currentAmount - totalInvested;
-      const cagr = Math.pow(currentAmount / initialAmount, 1 / investmentPeriod) - 1;
-      
+      const totalReturn = assetsOverTime[assetsOverTime.length-1].amount - totalInvested;
+      const cagr = Math.pow(assetsOverTime[assetsOverTime.length-1].amount / initialAmount, 1 / investmentPeriod) - 1;
       setResult({
-        finalAmount: currentAmount,
+        finalAmount: assetsOverTime[assetsOverTime.length-1].amount,
         totalInvested,
         totalReturn,
         cagr,
@@ -214,6 +219,21 @@ export default function ETFSimPage() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* 환율 입력 및 fetch */}
+        <div className="mb-4 flex items-center gap-2">
+          <span className="text-sm">USD/KRW 환율</span>
+          <input
+            type="number"
+            value={exchangeRate}
+            onChange={e => setExchangeRate(Number(e.target.value))}
+            className="border rounded px-2 py-1 w-24 text-right"
+            min={1}
+            step={0.01}
+          />
+          <Button size="sm" onClick={fetchExchangeRate} disabled={isFetchingRate}>
+            {isFetchingRate ? "불러오는 중..." : "최신 환율 적용"}
+          </Button>
+        </div>
         {/* Input Form */}
         <InputForm title="ETF 투자 시뮬레이션 설정">
           <div className="space-y-2">
