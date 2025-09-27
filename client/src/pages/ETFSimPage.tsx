@@ -22,153 +22,152 @@ interface ETFResult {
   assetsOverTime: { year: number; amount: number }[];
 }
 
-  // 환율 상태 및 fetch 함수 추가
-  const [exchangeRate, setExchangeRate] = useState<number>(1350); // 기본값: 1350원/USD
-  const [isFetchingRate, setIsFetchingRate] = useState(false);
-  const [exchangeRateTime, setExchangeRateTime] = useState<string>("");
-  const fetchExchangeRate = async () => {
-    setIsFetchingRate(true);
-    try {
-      const res = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=KRW');
-      const data = await res.json();
-      if (data && data.rates && data.rates.KRW) {
-        setExchangeRate(data.rates.KRW);
-        if (data.date) {
-          setExchangeRateTime(data.date + ' 기준');
-        } else {
-          setExchangeRateTime('실시간 조회');
-        }
+// 연도별 실제 수익률 mock 데이터 추가
+const etfOptions: ETFData[] = [
+// 환율 상태 및 fetch 함수 추가
+const [exchangeRate, setExchangeRate] = useState<number>(1350); // 기본값: 1350원/USD
+const [isFetchingRate, setIsFetchingRate] = useState(false);
+const [exchangeRateTime, setExchangeRateTime] = useState<string>("");
+const fetchExchangeRate = async () => {
+  setIsFetchingRate(true);
+  try {
+    const res = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=KRW');
+    const data = await res.json();
+    if (data && data.rates && data.rates.KRW) {
+      setExchangeRate(data.rates.KRW);
+      if (data.date) {
+        setExchangeRateTime(data.date + ' 기준');
+      } else {
+        setExchangeRateTime('실시간 조회');
       }
-    } catch (e) {
-      alert('환율 정보를 불러오지 못했습니다.');
-    } finally {
-      setIsFetchingRate(false);
     }
-  };
-  // todo: remove mock functionality - ETF data should come from backend
-  // 연도별 실제 수익률 mock 데이터 추가
-  const etfOptions: ETFData[] = [
-    { name: "S&P 500 ETF", symbol: "SPY", avgReturn: 0.10, description: "미국 대형주 500개 기업",
-      yearlyReturns: [
-        { year: 2004, return: 0.10 },
-        { year: 2005, return: 0.05 },
-        { year: 2006, return: 0.16 },
-        { year: 2007, return: 0.05 },
-        { year: 2008, return: -0.37 },
-        { year: 2009, return: 0.26 },
-        { year: 2010, return: 0.15 },
-        { year: 2011, return: 0.02 },
-        { year: 2012, return: 0.16 },
-        { year: 2013, return: 0.32 },
-        { year: 2014, return: 0.13 },
-        { year: 2015, return: 0.01 },
-        { year: 2016, return: 0.12 },
-        { year: 2017, return: 0.21 },
-        { year: 2018, return: -0.04 },
-        { year: 2019, return: 0.31 },
-        { year: 2020, return: 0.18 },
-        { year: 2021, return: 0.28 },
-        { year: 2022, return: -0.18 },
-        { year: 2023, return: 0.15 },
-      ]
-    },
-    { name: "나스닥 ETF", symbol: "QQQ", avgReturn: 0.12, description: "나스닥 100 기술주",
-      yearlyReturns: [
-        { year: 2004, return: 0.08 },
-        { year: 2005, return: 0.02 },
-        { year: 2006, return: 0.07 },
-        { year: 2007, return: 0.11 },
-        { year: 2008, return: -0.41 },
-        { year: 2009, return: 0.54 },
-        { year: 2010, return: 0.19 },
-        { year: 2011, return: 0.03 },
-        { year: 2012, return: 0.18 },
-        { year: 2013, return: 0.37 },
-        { year: 2014, return: 0.19 },
-        { year: 2015, return: 0.09 },
-        { year: 2016, return: 0.07 },
-        { year: 2017, return: 0.32 },
-        { year: 2018, return: -0.01 },
-        { year: 2019, return: 0.39 },
-        { year: 2020, return: 0.48 },
-        { year: 2021, return: 0.27 },
-        { year: 2022, return: -0.33 },
-        { year: 2023, return: 0.54 },
-      ]
-    },
-    { name: "전세계 주식 ETF", symbol: "VTI", avgReturn: 0.08, description: "전세계 분산 투자",
-      yearlyReturns: [
-        { year: 2004, return: 0.09 },
-        { year: 2005, return: 0.06 },
-        { year: 2006, return: 0.15 },
-        { year: 2007, return: 0.06 },
-        { year: 2008, return: -0.37 },
-        { year: 2009, return: 0.28 },
-        { year: 2010, return: 0.17 },
-        { year: 2011, return: 0.01 },
-        { year: 2012, return: 0.14 },
-        { year: 2013, return: 0.33 },
-        { year: 2014, return: 0.12 },
-        { year: 2015, return: 0.03 },
-        { year: 2016, return: 0.11 },
-        { year: 2017, return: 0.19 },
-        { year: 2018, return: -0.05 },
-        { year: 2019, return: 0.30 },
-        { year: 2020, return: 0.21 },
-        { year: 2021, return: 0.25 },
-        { year: 2022, return: -0.19 },
-        { year: 2023, return: 0.13 },
-      ]
-    },
-    { name: "신흥국 ETF", symbol: "VWO", avgReturn: 0.07, description: "신흥국 시장",
-      yearlyReturns: [
-        { year: 2004, return: 0.12 },
-        { year: 2005, return: 0.08 },
-        { year: 2006, return: 0.18 },
-        { year: 2007, return: 0.09 },
-        { year: 2008, return: -0.42 },
-        { year: 2009, return: 0.36 },
-        { year: 2010, return: 0.13 },
-        { year: 2011, return: -0.02 },
-        { year: 2012, return: 0.10 },
-        { year: 2013, return: 0.22 },
-        { year: 2014, return: 0.09 },
-        { year: 2015, return: -0.04 },
-        { year: 2016, return: 0.07 },
-        { year: 2017, return: 0.15 },
-        { year: 2018, return: -0.15 },
-        { year: 2019, return: 0.18 },
-        { year: 2020, return: 0.15 },
-        { year: 2021, return: -0.03 },
-        { year: 2022, return: -0.22 },
-        { year: 2023, return: 0.09 },
-      ]
-    },
-    { name: "리얼 에스테이트 ETF", symbol: "VNQ", avgReturn: 0.09, description: "부동산 투자 신탁",
-      yearlyReturns: [
-        { year: 2004, return: 0.11 },
-        { year: 2005, return: 0.07 },
-        { year: 2006, return: 0.17 },
-        { year: 2007, return: 0.08 },
-        { year: 2008, return: -0.38 },
-        { year: 2009, return: 0.32 },
-        { year: 2010, return: 0.10 },
-        { year: 2011, return: 0.00 },
-        { year: 2012, return: 0.12 },
-        { year: 2013, return: 0.28 },
-        { year: 2014, return: 0.10 },
-        { year: 2015, return: -0.02 },
-        { year: 2016, return: 0.09 },
-        { year: 2017, return: 0.13 },
-        { year: 2018, return: -0.05 },
-        { year: 2019, return: 0.29 },
-        { year: 2020, return: -0.05 },
-        { year: 2021, return: 0.41 },
-        { year: 2022, return: -0.26 },
-        { year: 2023, return: 0.13 },
-      ]
-    },
-  ];
+  } catch (e) {
+    alert('환율 정보를 불러오지 못했습니다.');
+  } finally {
+    setIsFetchingRate(false);
+  }
+};
+  { name: "S&P 500 ETF", symbol: "SPY", avgReturn: 0.10, description: "미국 대형주 500개 기업",
+    yearlyReturns: [
+      { year: 2004, return: 0.10 },
+      { year: 2005, return: 0.05 },
+      { year: 2006, return: 0.16 },
+      { year: 2007, return: 0.05 },
+      { year: 2008, return: -0.37 },
+      { year: 2009, return: 0.26 },
+      { year: 2010, return: 0.15 },
+      { year: 2011, return: 0.02 },
+      { year: 2012, return: 0.16 },
+      { year: 2013, return: 0.32 },
+      { year: 2014, return: 0.13 },
+      { year: 2015, return: 0.01 },
+      { year: 2016, return: 0.12 },
+      { year: 2017, return: 0.21 },
+      { year: 2018, return: -0.04 },
+      { year: 2019, return: 0.31 },
+      { year: 2020, return: 0.18 },
+      { year: 2021, return: 0.28 },
+      { year: 2022, return: -0.18 },
+      { year: 2023, return: 0.15 },
+    ]
+  },
+  { name: "나스닥 ETF", symbol: "QQQ", avgReturn: 0.12, description: "나스닥 100 기술주",
+    yearlyReturns: [
+      { year: 2004, return: 0.08 },
+      { year: 2005, return: 0.02 },
+      { year: 2006, return: 0.07 },
+      { year: 2007, return: 0.11 },
+      { year: 2008, return: -0.41 },
+      { year: 2009, return: 0.54 },
+      { year: 2010, return: 0.19 },
+      { year: 2011, return: 0.03 },
+      { year: 2012, return: 0.18 },
+      { year: 2013, return: 0.37 },
+      { year: 2014, return: 0.19 },
+      { year: 2015, return: 0.09 },
+      { year: 2016, return: 0.07 },
+      { year: 2017, return: 0.32 },
+      { year: 2018, return: -0.01 },
+      { year: 2019, return: 0.39 },
+      { year: 2020, return: 0.48 },
+      { year: 2021, return: 0.27 },
+      { year: 2022, return: -0.33 },
+      { year: 2023, return: 0.54 },
+    ]
+  },
+  { name: "전세계 주식 ETF", symbol: "VTI", avgReturn: 0.08, description: "전세계 분산 투자",
+    yearlyReturns: [
+      { year: 2004, return: 0.09 },
+      { year: 2005, return: 0.06 },
+      { year: 2006, return: 0.15 },
+      { year: 2007, return: 0.06 },
+      { year: 2008, return: -0.37 },
+      { year: 2009, return: 0.28 },
+      { year: 2010, return: 0.17 },
+      { year: 2011, return: 0.01 },
+      { year: 2012, return: 0.14 },
+      { year: 2013, return: 0.33 },
+      { year: 2014, return: 0.12 },
+      { year: 2015, return: 0.03 },
+      { year: 2016, return: 0.11 },
+      { year: 2017, return: 0.19 },
+      { year: 2018, return: -0.05 },
+      { year: 2019, return: 0.30 },
+      { year: 2020, return: 0.21 },
+      { year: 2021, return: 0.25 },
+      { year: 2022, return: -0.19 },
+      { year: 2023, return: 0.13 },
+    ]
+  },
+  { name: "신흥국 ETF", symbol: "VWO", avgReturn: 0.07, description: "신흥국 시장",
+    yearlyReturns: [
+      { year: 2004, return: 0.12 },
+      { year: 2005, return: 0.08 },
+      { year: 2006, return: 0.18 },
+      { year: 2007, return: 0.09 },
+      { year: 2008, return: -0.42 },
+      { year: 2009, return: 0.36 },
+      { year: 2010, return: 0.13 },
+      { year: 2011, return: -0.02 },
+      { year: 2012, return: 0.10 },
+      { year: 2013, return: 0.22 },
+      { year: 2014, return: 0.09 },
+      { year: 2015, return: -0.04 },
+      { year: 2016, return: 0.07 },
+      { year: 2017, return: 0.15 },
+      { year: 2018, return: -0.15 },
+      { year: 2019, return: 0.18 },
+      { year: 2020, return: 0.15 },
+      { year: 2021, return: -0.03 },
+      { year: 2022, return: -0.22 },
+      { year: 2023, return: 0.09 },
+    ]
+  },
+  { name: "리얼 에스테이트 ETF", symbol: "VNQ", avgReturn: 0.09, description: "부동산 투자 신탁",
+    yearlyReturns: [
+      { year: 2004, return: 0.11 },
+      { year: 2005, return: 0.07 },
+      { year: 2006, return: 0.17 },
+      { year: 2007, return: 0.08 },
+      { year: 2008, return: -0.38 },
+      { year: 2009, return: 0.32 },
+      { year: 2010, return: 0.10 },
+      { year: 2011, return: 0.00 },
+      { year: 2012, return: 0.12 },
+      { year: 2013, return: 0.28 },
+      { year: 2014, return: 0.10 },
+      { year: 2015, return: 0.02 },
+      { year: 2016, return: 0.08 },
+      { year: 2017, return: 0.05 },
+      { year: 2018, return: -0.05 },
+      { year: 2019, return: 0.28 },
+      { year: 2020, return: -0.05 },
+      { year: 2021, return: 0.36 },
+      { year: 2022, return: -0.26 },
+      { year: 2023, return: 0.11 },
+    ]
+  }
+];
 
   const [selectedETF, setSelectedETF] = useState<ETFData | null>(null);
   const [initialAmount, setInitialAmount] = useState(13000000);
@@ -242,9 +241,10 @@ interface ETFResult {
             </Button>
           </div>
           <div className="text-xs text-muted-foreground pl-1">
-            {exchangeRateTime && (
-              <span>환율 정보: {exchangeRate}원 ( {exchangeRateTime} )</span>
-            )}
+            <span>
+              환율 정보: {exchangeRate}원
+              {exchangeRateTime ? ` ( ${exchangeRateTime} )` : ''}
+            </span>
           </div>
         </div>
         {/* Input Form */}
@@ -363,114 +363,175 @@ interface ETFResult {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
               <CardContent className="p-6 text-center">
-                <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
-                <div className="text-2xl font-bold text-primary" data-testid="text-final-amount">
-                  {formatCurrency(result.finalAmount)}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  최종 자산
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6 text-center">
-                <BarChart3 className="h-8 w-8 text-primary mx-auto mb-2" />
-                <div className="text-2xl font-bold text-primary">
-                  {formatPercentage(result.cagr)}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  연평균 복합 성장률 (CAGR)
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6 text-center">
-                <Calculator className="h-8 w-8 text-primary mx-auto mb-2" />
-                <div className="text-2xl font-bold text-green-600">
-                  {formatCurrency(result.totalReturn)}
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  총 수익
-                </p>
-              </CardContent>
-            </Card>
-          </div>
 
-          {/* Investment Summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle>투자 요약</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">초기 투자금</span>
-                <span className="font-medium">{formatCurrency(initialAmount)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">총 적립액</span>
-                <span className="font-medium">
-                  {formatCurrency(monthlyAmount * investmentPeriod * 12)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">총 투자금</span>
-                <span className="font-medium">{formatCurrency(result.totalInvested)}</span>
-              </div>
-              <div className="flex justify-between text-green-600">
-                <span>투자 수익</span>
-                <span className="font-medium">{formatCurrency(result.totalReturn)}</span>
-              </div>
-              <div className="flex justify-between border-t pt-3">
-                <span className="font-medium">최종 자산</span>
-                <span className="font-bold text-primary">
-                  {formatCurrency(result.finalAmount)}
-                </span>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                수익률: {formatPercentage(result.totalReturn / result.totalInvested)}
-              </div>
-            </CardContent>
-          </Card>
+                import { useState } from "react";
+                import { Button } from "@/components/ui/button";
+                import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+                import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+                import { InputForm, InputField } from "@/components/InputForm";
+                import ChartGraph from "@/components/ChartGraph";
+                import { Calculator, TrendingUp, BarChart3 } from "lucide-react";
 
-          {/* 연도별 실제 수익률 비교 차트 */}
-          {selectedETF.yearlyReturns && (
-            <Card>
-              <CardHeader>
-                <CardTitle>{selectedETF.name} 연도별 실제 수익률</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ChartGraph
-                  data={selectedETF.yearlyReturns.map(y => ({ ...y, return: y.return * 100 }))}
-                  title={`${selectedETF.name} 연도별 실제 수익률`}
-                  labelKey="year"
-                  valueKey="return"
-                  xAxisLabel="연도"
-                  yAxisLabel="수익률 (%)"
-                  valueFormatter={(v) => `${v.toFixed(1)}%`}
-                />
-              </CardContent>
-            </Card>
-          )}
-          {/* 기존 자산 성장 차트 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>자산 성장 차트</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ChartGraph
-                data={result.assetsOverTime}
-                title={`${selectedETF.name} 투자 성장`}
-                labelKey="year"
-                valueKey="amount"
-                xAxisLabel="년차"
-                yAxisLabel="자산 (원)"
-              />
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    </div>
-  );
-}
+                interface ETFData {
+                  name: string;
+                  symbol: string;
+                  avgReturn: number;
+                  description: string;
+                  yearlyReturns?: { year: number; return: number }[];
+                }
+
+                interface ETFResult {
+                  finalAmount: number;
+                  totalInvested: number;
+                  totalReturn: number;
+                  cagr: number;
+                  assetsOverTime: { year: number; amount: number }[];
+                }
+
+                export default function ETFSimPage() {
+                  // 연도별 실제 수익률 mock 데이터 추가
+                  const etfOptions: ETFData[] = [
+                    { name: "S&P 500 ETF", symbol: "SPY", avgReturn: 0.10, description: "미국 대형주 500개 기업",
+                      yearlyReturns: [
+                        { year: 2004, return: 0.10 },
+                        { year: 2005, return: 0.05 },
+                        { year: 2006, return: 0.16 },
+                        { year: 2007, return: 0.05 },
+                        { year: 2008, return: -0.37 },
+                        { year: 2009, return: 0.26 },
+                        { year: 2010, return: 0.15 },
+                        { year: 2011, return: 0.02 },
+                        { year: 2012, return: 0.16 },
+                        { year: 2013, return: 0.32 },
+                        { year: 2014, return: 0.13 },
+                        { year: 2015, return: 0.01 },
+                        { year: 2016, return: 0.12 },
+                        { year: 2017, return: 0.21 },
+                        { year: 2018, return: -0.04 },
+                        { year: 2019, return: 0.31 },
+                        { year: 2020, return: 0.18 },
+                        { year: 2021, return: 0.28 },
+                        { year: 2022, return: -0.18 },
+                        { year: 2023, return: 0.15 },
+                      ]
+                    },
+                    { name: "나스닥 ETF", symbol: "QQQ", avgReturn: 0.12, description: "나스닥 100 기술주",
+                      yearlyReturns: [
+                        { year: 2004, return: 0.08 },
+                        { year: 2005, return: 0.02 },
+                        { year: 2006, return: 0.07 },
+                        { year: 2007, return: 0.11 },
+                        { year: 2008, return: -0.41 },
+                        { year: 2009, return: 0.54 },
+                        { year: 2010, return: 0.19 },
+                        { year: 2011, return: 0.03 },
+                        { year: 2012, return: 0.18 },
+                        { year: 2013, return: 0.37 },
+                        { year: 2014, return: 0.19 },
+                        { year: 2015, return: 0.09 },
+                        { year: 2016, return: 0.07 },
+                        { year: 2017, return: 0.32 },
+                        { year: 2018, return: -0.01 },
+                        { year: 2019, return: 0.39 },
+                        { year: 2020, return: 0.48 },
+                        { year: 2021, return: 0.27 },
+                        { year: 2022, return: -0.33 },
+                        { year: 2023, return: 0.54 },
+                      ]
+                    },
+                    { name: "전세계 주식 ETF", symbol: "VTI", avgReturn: 0.08, description: "전세계 분산 투자",
+                      yearlyReturns: [
+                        { year: 2004, return: 0.09 },
+                        { year: 2005, return: 0.06 },
+                        { year: 2006, return: 0.15 },
+                        { year: 2007, return: 0.06 },
+                        { year: 2008, return: -0.37 },
+                        { year: 2009, return: 0.28 },
+                        { year: 2010, return: 0.17 },
+                        { year: 2011, return: 0.01 },
+                        { year: 2012, return: 0.14 },
+                        { year: 2013, return: 0.33 },
+                        { year: 2014, return: 0.12 },
+                        { year: 2015, return: 0.03 },
+                        { year: 2016, return: 0.11 },
+                        { year: 2017, return: 0.19 },
+                        { year: 2018, return: -0.05 },
+                        { year: 2019, return: 0.30 },
+                        { year: 2020, return: 0.21 },
+                        { year: 2021, return: 0.25 },
+                        { year: 2022, return: -0.19 },
+                        { year: 2023, return: 0.13 },
+                      ]
+                    },
+                    { name: "신흥국 ETF", symbol: "VWO", avgReturn: 0.07, description: "신흥국 시장",
+                      yearlyReturns: [
+                        { year: 2004, return: 0.12 },
+                        { year: 2005, return: 0.08 },
+                        { year: 2006, return: 0.18 },
+                        { year: 2007, return: 0.09 },
+                        { year: 2008, return: -0.42 },
+                        { year: 2009, return: 0.36 },
+                        { year: 2010, return: 0.13 },
+                        { year: 2011, return: -0.02 },
+                        { year: 2012, return: 0.10 },
+                        { year: 2013, return: 0.22 },
+                        { year: 2014, return: 0.09 },
+                        { year: 2015, return: -0.04 },
+                        { year: 2016, return: 0.07 },
+                        { year: 2017, return: 0.15 },
+                        { year: 2018, return: -0.15 },
+                        { year: 2019, return: 0.18 },
+                        { year: 2020, return: 0.15 },
+                        { year: 2021, return: -0.03 },
+                        { year: 2022, return: -0.22 },
+                        { year: 2023, return: 0.09 },
+                      ]
+                    },
+                    { name: "리얼 에스테이트 ETF", symbol: "VNQ", avgReturn: 0.09, description: "부동산 투자 신탁",
+                      yearlyReturns: [
+                        { year: 2004, return: 0.11 },
+                        { year: 2005, return: 0.07 },
+                        { year: 2006, return: 0.17 },
+                        { year: 2007, return: 0.08 },
+                        { year: 2008, return: -0.38 },
+                        { year: 2009, return: 0.32 },
+                        { year: 2010, return: 0.10 },
+                        { year: 2011, return: 0.00 },
+                        { year: 2012, return: 0.12 },
+                        { year: 2013, return: 0.28 },
+                        { year: 2014, return: 0.10 },
+                        { year: 2015, return: 0.02 },
+                        { year: 2016, return: 0.08 },
+                        { year: 2017, return: 0.05 },
+                        { year: 2018, return: -0.05 },
+                        { year: 2019, return: 0.28 },
+                        { year: 2020, return: -0.05 },
+                        { year: 2021, return: 0.36 },
+                        { year: 2022, return: -0.26 },
+                        { year: 2023, return: 0.11 },
+                      ]
+                    }
+                  ];
+
+                  const [exchangeRate, setExchangeRate] = useState<number>(1350); // 기본값: 1350원/USD
+                  const [isFetchingRate, setIsFetchingRate] = useState(false);
+                  const [exchangeRateTime, setExchangeRateTime] = useState<string>("");
+                  const fetchExchangeRate = async () => {
+                    setIsFetchingRate(true);
+                    try {
+                      const res = await fetch('https://api.exchangerate.host/latest?base=USD&symbols=KRW');
+                      const data = await res.json();
+                      if (data && data.rates && data.rates.KRW) {
+                        setExchangeRate(data.rates.KRW);
+                        if (data.date) {
+                          setExchangeRateTime(data.date + ' 기준');
+                        } else {
+                          setExchangeRateTime('실시간 조회');
+                        }
+                      }
+                    } catch (e) {
+                      alert('환율 정보를 불러오지 못했습니다.');
+                    } finally {
+                      setIsFetchingRate(false);
+                    }
+                  };
